@@ -25,6 +25,9 @@ test {
 }
 
 dependencies {
+    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.21'
+    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-jasper', version: '9.0.21'
+//    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-logging-juli', version: '9.0.21'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
