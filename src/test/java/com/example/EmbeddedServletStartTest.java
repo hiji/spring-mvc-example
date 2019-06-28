@@ -22,8 +22,7 @@ public class EmbeddedServletStartTest {
         StandardContext ctx = (StandardContext) tomcat.addWebapp(
                 "/",
                 new File("src/main/webapp").getAbsolutePath());
-        // web.xmlが読めてないようで、コードでServlet設定すると動いた
-        Tomcat.addServlet(ctx, "helloServlet", new HelloServlet()).addMapping("/hello");
+//        Tomcat.addServlet(ctx, "helloServlet", new HelloServlet()).addMapping("/hello");
 
         // Tomcat9からgetConnector()を呼ばないと起動に失敗してしまう
         tomcat.getConnector();
