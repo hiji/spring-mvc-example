@@ -7,9 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
+//    @GetMapping("/hello")
+//    public String handle(Model model) {
+//        model.addAttribute("message", "Hello World!");
+//        return "index";
+//    }
+
     @GetMapping("/hello")
-    public String handle(Model model) {
-        model.addAttribute("message", "Hello World!");
-        return "index";
+    public HelloResponse handle(Model model) {
+        return new HelloResponse("hoge", 18);
     }
 }
