@@ -2,12 +2,9 @@ package com.example;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.File;
