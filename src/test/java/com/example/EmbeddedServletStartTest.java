@@ -1,6 +1,7 @@
 package com.example;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
@@ -12,6 +13,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,10 +47,23 @@ public class EmbeddedServletStartTest {
     }
 
     @Test
-    void helloGetAPI() throws Exception {
+    void getAPI() throws Exception {
         Response response = RestAssured.get("/app/hello");
         assertEquals("hoge", response.jsonPath().getString("name"));
         assertEquals(18, response.jsonPath().getInt("age"));
+    }
+
+    @Test
+    void postAPI() throws Exception {
+        Map<String, Object> jsonAsMap = new HashMap<>();
+        jsonAsMap.put("name", "fuga");
+        jsonAsMap.put("age", 20);
+        Response response = RestAssured
+                .given().contentType(ContentType.JSON).body(jsonAsMap)
+                .when().post("/app/post");
+        response.getBody().print();
+        assertEquals("fuga", response.jsonPath().getString("name"));
+        assertEquals(20, response.jsonPath().getInt("age"));
     }
 
     @Test
