@@ -1,17 +1,19 @@
-package com.example;
+package com.example.app;
 
-public class HelloResponse {
+public class HelloRequest {
 
     private String name;
 
     private int age;
 
-    public HelloResponse(String name, int age) {
+    public HelloRequest(String name, int age) {
         this.name = name;
         this.age = age;
     }
 
-    // Jacksonで返却時にGetter必要
+    public HelloRequest() {
+    }
+
     public String getName() {
         return name;
     }
