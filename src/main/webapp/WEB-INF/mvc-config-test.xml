@@ -11,6 +11,8 @@
     <mvc:annotation-driven />
 
 <!--    <context:annotation-config/>-->
+
+    <!-- component-scanにannotation-config属性があり、デフォルトはtrueになってる -->
     <context:component-scan base-package="com.example.config.webcomponent"/>
 
 <!--    <bean class="com.example.config.webcomponent.WebMvcComponentScanConfig"/>-->
