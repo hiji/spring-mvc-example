@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:service="http://www.example.com/schema/service"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.example.com/schema/service http://www.example.com/schema/service/service.xsd">
+
+    <bean name="HogeProcessor" class="com.example.app.xml.HogeProcessor"/>
+    <bean name="HogeProcessor2" class="com.example.app.xml.HogeProcessor"/>
+
+    <service:consumer name="hoge">
+        <service:variable name="var1" value="papa"/>
+        <service:variable name="var2" value="mama"/>
+        <service:processor ref="HogeProcessor"/>
+        <service:http-request path="hoge-request"/>
+    </service:consumer>
+
+    <service:consumer name="fuga">
+        <service:processor ref="HogeProcessor"/>
+        <service:processor ref="HogeProcessor2"/>
+        <service:http-request path="fuga-request"/>
+    </service:consumer>
+
+    <service:fuga name="FugaProcessor"/>
+
+    <bean name="FugaOption" class="com.example.app.xml.FugaOption"/>
+
+</beans>
