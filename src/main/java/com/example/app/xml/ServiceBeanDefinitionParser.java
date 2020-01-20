@@ -1,6 +1,8 @@
 package com.example.app.xml;
 
+import org.springframework.beans.BeanMetadataElement;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -52,18 +54,18 @@ public class ServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {
     }
 
     private void parseChildElements(List<Element> childElements, BeanDefinitionBuilder factory, ParserContext parserContext) {
-        ManagedList<BeanDefinition> children = new ManagedList<>(childElements.size());
+        ManagedList<BeanMetadataElement> children = new ManagedList<>(childElements.size());
         for (Element element : childElements) {
             children.add(parseChildElement(element, parserContext));
         }
         factory.addPropertyValue("processors", children);
     }
 
-    private BeanDefinition parseChildElement(Element element, ParserContext parserContext) {
+    private BeanMetadataElement parseChildElement(Element element, ParserContext parserContext) {
         String tagName = element.getLocalName();
         switch (tagName) {
             case PROCESSOR_ELEMENT:
-                return parseProcessor(element, parserContext.getRegistry());
+                return parseProcessor(element, parserContext);
             case HTTP_REQUEST_ELEMENT:
                 return parseHttpRequest(element);
             case COMPONENT_ELEMENT:
@@ -87,9 +89,11 @@ public class ServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {
         return componentBean.getBeanDefinition();
     }
 
-    private BeanDefinition parseProcessor(Element element, BeanDefinitionRegistry registry) {
+    private BeanMetadataElement parseProcessor(Element element, ParserContext parserContext) {
         String refName = element.getAttribute("ref");
-        return registry.getBeanDefinition(refName);
+        RuntimeBeanReference ref = new RuntimeBeanReference(refName, false);
+        ref.setSource(parserContext.getReaderContext().extractSource(element));
+        return ref;
     }
 
     private BeanDefinition parseHttpRequest(Element element) {
