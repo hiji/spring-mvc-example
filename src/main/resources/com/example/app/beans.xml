@@ -6,24 +6,34 @@
         http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.example.com/schema/service http://www.example.com/schema/service/service.xsd">
 
-    <bean name="HogeProcessor" class="com.example.app.xml.HogeProcessor"/>
-    <bean name="HogeProcessor2" class="com.example.app.xml.HogeProcessor"/>
+<!--    <bean name="HogeProcessor" class="com.example.app.xml.HogeProcessor"/>-->
+<!--    <bean name="HogeProcessor2" class="com.example.app.xml.HogeProcessor"/>-->
 
-    <service:consumer name="hoge">
-        <service:variable name="var1" value="papa"/>
-        <service:variable name="var2" value="mama"/>
-        <service:processor ref="HogeProcessor"/>
-        <service:http-request path="hoge-request"/>
+<!--    <service:consumer name="hoge">-->
+<!--        <service:variable name="var1" value="papa"/>-->
+<!--        <service:variable name="var2" value="mama"/>-->
+<!--        <service:processor ref="HogeProcessor"/>-->
+<!--        <service:http-request path="hoge-request"/>-->
+<!--    </service:consumer>-->
+
+<!--    <service:consumer name="fuga">-->
+<!--        <service:processor ref="HogeProcessor"/>-->
+<!--        <service:processor ref="HogeProcessor2"/>-->
+<!--        <service:http-request path="fuga-request"/>-->
+<!--    </service:consumer>-->
+
+    <service:consumer name="buga">
+        <service:component>
+            <bean class="com.example.app.xml.BugaComponent"/>
+        </service:component>
     </service:consumer>
+
 
     <service:consumer name="fuga">
-        <service:processor ref="HogeProcessor"/>
-        <service:processor ref="HogeProcessor2"/>
-        <service:http-request path="fuga-request"/>
+        <service:component>
+            <ref bean="fugaComponent" />
+        </service:component>
     </service:consumer>
-
-    <service:fuga name="FugaProcessor"/>
-
-    <bean name="FugaOption" class="com.example.app.xml.FugaOption"/>
+    <bean name="fugaComponent" class="com.example.app.xml.FugaComponent"/>
 
 </beans>

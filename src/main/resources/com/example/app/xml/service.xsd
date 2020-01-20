@@ -16,6 +16,7 @@
                 <xsd:choice minOccurs="0" maxOccurs="unbounded">
                     <xsd:element ref="processor"/>
                     <xsd:element ref="http-request"/>
+                    <xsd:element ref="component"/>
                 </xsd:choice>
             </xsd:sequence>
             <xsd:attribute name="name" type="xsd:string" use="required"/>
@@ -37,10 +38,12 @@
             <xsd:attribute name="value" type="xsd:string" use="required"/>
         </xsd:complexType>
     </xsd:element>
-
-    <xsd:element name="fuga">
+    <xsd:element name="component">
         <xsd:complexType>
-            <xsd:attribute name="name" type="xsd:string" use="required"/>
+            <xsd:choice minOccurs="0">
+                <xsd:element ref="beans:bean" />
+                <xsd:element ref="beans:ref" />
+            </xsd:choice>
         </xsd:complexType>
     </xsd:element>
 

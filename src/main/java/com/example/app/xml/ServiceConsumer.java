@@ -22,6 +22,7 @@ public class ServiceConsumer {
         Object input = message;
         Object output = null;
         for (Processor processor : processors) {
+            if (processor == null) continue;
             output = processor.execute(environment, input);
             input = output;
         }

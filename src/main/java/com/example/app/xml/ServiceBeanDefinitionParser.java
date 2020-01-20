@@ -1,7 +1,6 @@
 package com.example.app.xml;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -10,11 +9,8 @@ import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
@@ -24,18 +20,20 @@ public class ServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
     private static final String HTTP_REQUEST_ELEMENT = "http-request";
 
+    private static final String COMPONENT_ELEMENT = "component";
+
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-        return parseServiceConsumerElement(element, parserContext.getRegistry());
+        return parseServiceConsumerElement(element, parserContext);
     }
 
-    private AbstractBeanDefinition parseServiceConsumerElement(Element element, BeanDefinitionRegistry registry) {
+    private AbstractBeanDefinition parseServiceConsumerElement(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(ServiceConsumerFactoryBean.class);
         factory.addPropertyValue("service", parseServiceConsumer(element));
 
-        List<Element> childElements = DomUtils.getChildElementsByTagName(element, PROCESSOR_ELEMENT, HTTP_REQUEST_ELEMENT);
+        List<Element> childElements = DomUtils.getChildElementsByTagName(element, PROCESSOR_ELEMENT, HTTP_REQUEST_ELEMENT, COMPONENT_ELEMENT);
         if (!childElements.isEmpty()) {
-            parseChildElements(childElements, factory, registry);
+            parseChildElements(childElements, factory, parserContext);
         }
 
         return factory.getBeanDefinition();
@@ -53,22 +51,40 @@ public class ServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {
         return service.getBeanDefinition();
     }
 
-    private void parseChildElements(List<Element> childElements, BeanDefinitionBuilder factory, BeanDefinitionRegistry registry) {
+    private void parseChildElements(List<Element> childElements, BeanDefinitionBuilder factory, ParserContext parserContext) {
         ManagedList<BeanDefinition> children = new ManagedList<>(childElements.size());
         for (Element element : childElements) {
-            children.add(parseChildElement(element, registry));
+            children.add(parseChildElement(element, parserContext));
         }
         factory.addPropertyValue("processors", children);
     }
 
-    private BeanDefinition parseChildElement(Element element, BeanDefinitionRegistry registry) {
+    private BeanDefinition parseChildElement(Element element, ParserContext parserContext) {
         String tagName = element.getLocalName();
-        if (tagName.equals(PROCESSOR_ELEMENT)) {
-            return parseProcessor(element, registry);
-        } else if (tagName.equals(HTTP_REQUEST_ELEMENT)) {
-            return parseHttpRequest(element);
+        switch (tagName) {
+            case PROCESSOR_ELEMENT:
+                return parseProcessor(element, parserContext.getRegistry());
+            case HTTP_REQUEST_ELEMENT:
+                return parseHttpRequest(element);
+            case COMPONENT_ELEMENT:
+                return parseComponent(element, parserContext);
         }
         throw new IllegalStateException();
+    }
+
+    private BeanDefinition parseComponent(Element element, ParserContext parserContext) {
+        Element childElement = DomUtils.getChildElements(element).get(0);
+//                BeanDefinitionParserDelegate.BEAN_ELEMENT,
+//                BeanDefinitionParserDelegate.REF_ELEMENT);
+//        for (Element childElement : childElements) {
+//            BeanDefinitionHolder beanDefinitionHolder = parserContext.getDelegate().parseBeanDefinitionElement(childElement);
+//        }
+//        BeanDefinitionHolder beanDefinitionHolder = parserContext.getDelegate().parseBeanDefinitionElement(childElement);
+//        componentBean.addConstructorArgValue(beanDefinitionHolder.getBeanDefinition());
+        BeanDefinitionBuilder componentBean = BeanDefinitionBuilder.rootBeanDefinition(ComponentBean.class);
+        Object beanElement = parserContext.getDelegate().parsePropertySubElement(childElement, null);
+        componentBean.addConstructorArgValue(beanElement);
+        return componentBean.getBeanDefinition();
     }
 
     private BeanDefinition parseProcessor(Element element, BeanDefinitionRegistry registry) {

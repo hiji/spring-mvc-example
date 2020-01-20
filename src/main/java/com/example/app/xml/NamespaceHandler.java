@@ -7,6 +7,7 @@ public class NamespaceHandler extends NamespaceHandlerSupport {
     public void init() {
         registerBeanDefinitionParser("consumer", new ServiceBeanDefinitionParser());
         registerBeanDefinitionParser("http-request", new HttpRequestBeanDefinitionParser());
-        registerBeanDefinitionParser("fuga", new FugaBeanDefinitionParser());
+//        registerBeanDefinitionParser("fuga", new FugaBeanDefinitionParser());
+//        registerBeanDefinitionParser("component", new HttpRequestBeanDefinitionParser());
     }
 }
